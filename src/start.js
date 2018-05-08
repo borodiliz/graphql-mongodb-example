@@ -78,11 +78,11 @@ export const start = async () => {
       Mutation: {
         createPost: async (root, args, context, info) => {
           const res = await Posts.insert(args)
-          return prepare(await Posts.findOne({_id: res.insertedIds[1]}))
+          return prepare(await Posts.findOne({_id: res.insertedIds[0]}))
         },
         createComment: async (root, args) => {
           const res = await Comments.insert(args)
-          return prepare(await Comments.findOne({_id: res.insertedIds[1]}))
+          return prepare(await Comments.findOne({_id: res.insertedIds[0]}))
         },
       },
     }
