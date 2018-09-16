@@ -10,6 +10,12 @@ const prepare = (o) => {
   return o
 }
 
+export type TMutation<T> = (root, args: T, context?, info?) => Promise<T>
+export interface IMutations {
+  createPost?: TMutation<Post>
+  createComment?: TMutation<Comment>
+}
+
 export const createServer = async () => {
 
   try {

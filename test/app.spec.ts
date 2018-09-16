@@ -15,33 +15,34 @@ describe('GraphQL', () => {
       title: 'Title',
       content: 'Content'
     }
-    const res = await req.mutation(`
-      createPost(title: "${post.title}", content: "${post.content}") {
-        title content
-      }
-    `)
 
-    expect(res.body.data.createPost).to.eql(post)
+    // const res = await req.mutation(`
+    //   createPost(title: "${post.title}", content: "${post.content}") {
+    //     title content
+    //   }
+    // `)
+
+    const resPost = await req.mutationObject<Post>({
+      createPost: post
+    }, 'title content')
+
+    expect(resPost).to.eql(post)
   })
 
   it('mutation - createComment', async () => {
-    let res = await req.mutation(`
-      createPost(title: "Title", content: "Post") {
-        _id
-      }
-    `)
+    const post = await req.mutationObject<Post>({
+      createPost: { title: 'Title', content: 'Content' }
+    }, '_id')
 
     const comment: Comment = {
-      postId: res.body.data.createPost._id as string,
+      postId: post._id,
       content: 'Comment'
     }
 
-    res = await req.mutation(`
-      createComment(postId: "${comment.postId}", content: "${comment.content}") {
-        postId content
-      }
-    `)
+    const resComment = await req.mutationObject({
+      createComment: comment
+    }, 'postId content')
 
-    expect(res.body.data.createComment).to.eql(comment)
+    expect(resComment).to.eql(comment)
   })
 })
