@@ -1,8 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb'
 import express from 'express'
-import bodyParser from 'body-parser'
-import { graphqlExpress, graphiqlExpress } from 'graphql-server-express'
-import { makeExecutableSchema } from 'graphql-tools'
+import { ApolloServer, gql } from 'apollo-server-express'
 
 const URL = 'http://localhost'
 const PORT = 3001
@@ -29,13 +27,13 @@ interface Post {
 
 export const start = async () => {
   try {
-    const client = await MongoClient.connect(MONGO_URL)
+    const client = await MongoClient.connect(MONGO_URL, { useNewUrlParser: true })
     const db = client.db('blog')
 
     const Posts = db.collection<Post>('posts')
     const Comments = db.collection<Comment>('comments')
 
-    const typeDefs = [`
+    const typeDefs = gql`
       type Query {
         post(_id: String): Post
         posts: [Post]
@@ -65,7 +63,7 @@ export const start = async () => {
         query: Query
         mutation: Mutation
       }
-    `]
+    `
 
     const resolvers = {
       Query: {
@@ -92,7 +90,6 @@ export const start = async () => {
       Mutation: {
         createPost: async (root, args, context, info) => {
           const res = await Posts.insertOne(args)
-          console.log(res)
           return prepare(await Posts.findOne({ _id: res.insertedId }))
         },
         createComment: async (root, args) => {
@@ -102,23 +99,17 @@ export const start = async () => {
       }
     }
 
-    const schema = makeExecutableSchema({
+    const server = new ApolloServer({
       typeDefs,
       resolvers
     })
 
     const app = express()
 
-    app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }))
-
-    const homePath = '/graphiql'
-
-    app.use(homePath, graphiqlExpress({
-      endpointURL: '/graphql'
-    }))
+    server.applyMiddleware({ app })
 
     app.listen(PORT, () => {
-      console.log(`Visit ${URL}:${PORT}${homePath}`)
+      console.log(`Visit ${URL}:${PORT}${server.graphqlPath}`)
     })
 
   } catch (e) {
