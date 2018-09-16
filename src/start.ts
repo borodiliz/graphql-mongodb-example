@@ -1,33 +1,19 @@
 import { MongoClient, ObjectId } from 'mongodb'
 import express from 'express'
 import { ApolloServer, gql } from 'apollo-server-express'
+import { Post, Comment } from './models'
 
-const URL = 'http://localhost'
-const PORT = 3001
-const MONGO_URL = 'mongodb://localhost:27017/'
+require('dotenv').config()
 
-const prepare = (o: { _id: ObjectId | string }) => {
+const prepare = (o) => {
   o._id = o._id.toString()
   return o
 }
 
-interface Comment {
-  _id: string
-  postId: string
-  content: string
-  post: Post
-}
+export const createServer = async () => {
 
-interface Post {
-  _id: string
-  title: string
-  content: string
-  comments: [Comment]
-}
-
-export const start = async () => {
   try {
-    const client = await MongoClient.connect(MONGO_URL, { useNewUrlParser: true })
+    const client = await MongoClient.connect(process.env.MONGO_URL, { useNewUrlParser: true })
     const db = client.db('blog')
 
     const Posts = db.collection<Post>('posts')
@@ -108,12 +94,9 @@ export const start = async () => {
 
     server.applyMiddleware({ app })
 
-    app.listen(PORT, () => {
-      console.log(`Visit ${URL}:${PORT}${server.graphqlPath}`)
-    })
+    return { app, server }
 
   } catch (e) {
     console.log(e)
   }
-
 }

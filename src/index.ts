@@ -1,3 +1,8 @@
-import { start } from './start'
+import { createServer } from './start'
 
-start()
+createServer()
+  .then(({ app, server }) => {
+    app.listen(process.env.PORT, () => {
+      console.log(`Visit http://localhost:${process.env.PORT}${server.graphqlPath}`)
+    })
+  })
