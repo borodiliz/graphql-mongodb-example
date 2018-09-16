@@ -6,7 +6,7 @@ const URL = 'http://localhost'
 const PORT = 3001
 const MONGO_URL = 'mongodb://localhost:27017/'
 
-const prepare = (o) => {
+const prepare = (o: { _id: ObjectId | string }) => {
   o._id = o._id.toString()
   return o
 }
@@ -93,7 +93,7 @@ export const start = async () => {
           return prepare(await Posts.findOne({ _id: res.insertedId }))
         },
         createComment: async (root, args) => {
-          const res = await Comments.insert(args)
+          const res = await Comments.insertOne(args)
           return prepare(await Comments.findOne({ _id: res.insertedId }))
         }
       }
