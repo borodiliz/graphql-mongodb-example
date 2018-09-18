@@ -1,7 +1,8 @@
 import { Post } from './Post'
+import { ObjectID } from 'mongodb'
 
 export interface Comment {
-  _id?: string
+  _id?: ObjectID
   postId: string
   content: string
   post?: Post

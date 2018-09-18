@@ -5,17 +5,6 @@ import { Post, Comment } from './models'
 
 require('dotenv').config()
 
-const prepare = (o) => {
-  o._id = o._id.toString()
-  return o
-}
-
-export type TMutation<T> = (root, args: T, context?, info?) => Promise<T>
-export interface IMutations {
-  createPost?: TMutation<Post>
-  createComment?: TMutation<Comment>
-}
-
 export const createServer = async () => {
 
   try {
@@ -33,16 +22,16 @@ export const createServer = async () => {
       }
 
       type Post {
-        _id: String
-        title: String
+        _id: ID!
+        title: String!
         content: String
-        comments: [Comment]
+        comments: [Comment!]
       }
 
       type Comment {
-        _id: String
-        postId: String
-        content: String
+        _id: ID!
+        postId: String!
+        content: String!
         post: Post
       }
 
@@ -59,34 +48,36 @@ export const createServer = async () => {
 
     const resolvers = {
       Query: {
-        post: async (root, { _id }: Post) => {
-          return prepare(await Posts.findOne(new ObjectId(_id)))
+        post: (root, { _id }: Post) => {
+          return Posts.findOne(new ObjectId(_id))
         },
-        posts: async () => {
-          return (await Posts.find({}).toArray()).map(prepare)
+        posts: () => {
+          return Posts.find({}).toArray()
         },
-        comment: async (root, { _id }: Comment) => {
-          return prepare(await Comments.findOne(new ObjectId(_id)))
+        comment: (root, { _id }: Comment) => {
+          return Comments.findOne(new ObjectId(_id))
         }
       },
       Post: {
-        comments: async ({ _id }) => {
-          return (await Comments.find({ postId: _id }).toArray()).map(prepare)
+        _id: ({ _id }: Post) => _id.toString(),
+        comments: ({ _id }: Post) => {
+          return Comments.find({ postId: _id.toString() }).toArray()
         }
       },
       Comment: {
-        post: async ({ postId }: Comment) => {
-          return prepare(await Posts.findOne(new ObjectId(postId)))
+        _id: ({ _id }: Comment) => _id.toString(),
+        post: ({ postId }: Comment) => {
+          return Posts.findOne(new ObjectId(postId))
         }
       },
       Mutation: {
         createPost: async (root, args, context, info) => {
           const res = await Posts.insertOne(args)
-          return prepare(await Posts.findOne({ _id: res.insertedId }))
+          return Posts.findOne({ _id: res.insertedId })
         },
         createComment: async (root, args) => {
           const res = await Comments.insertOne(args)
-          return prepare(await Comments.findOne({ _id: res.insertedId }))
+          return Comments.findOne({ _id: res.insertedId })
         }
       }
     }
