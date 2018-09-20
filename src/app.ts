@@ -2,7 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb'
 import express from 'express'
 import { ApolloServer, gql } from 'apollo-server-express'
 import { Post, Comment } from './models'
-import { GraphQLScalarType } from 'graphql'
+import { GraphQLScalarType, Kind } from 'graphql'
 
 require('dotenv').config()
 
@@ -19,7 +19,7 @@ export const createServer = async () => {
       scalar ObjectId
 
       type Query {
-        post(_id: String): Post
+        post(_id: ObjectId): Post
         posts: [Post]
         comment(_id: String): Comment
       }
@@ -52,7 +52,15 @@ export const createServer = async () => {
     const resolvers = {
       ObjectId: new GraphQLScalarType({
         name: 'ObjectId',
-        serialize: val => new ObjectId(val)
+        parseValue: val => val,
+        serialize: val => val.toString(),
+        parseLiteral: ast => {
+          if (ast.kind !== Kind.STRING) {
+            return null
+          }
+
+          return new ObjectId(ast.value)
+        }
       }),
       Query: {
         post: (root, { _id }: Post) => {
