@@ -1,5 +1,5 @@
 import supertest, { SuperTest, Test } from 'supertest'
-import { createServer } from '../src/start'
+import { createServer } from '~/app'
 import { ApolloServer } from 'apollo-server-express'
 import { Express } from 'express'
 

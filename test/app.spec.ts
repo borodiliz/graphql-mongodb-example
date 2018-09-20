@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Post, Comment } from '../src/models'
+import { Post, Comment } from '~/models'
 
 import { createRequest, Request } from './request'
 

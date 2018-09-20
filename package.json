@@ -4,9 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "test": "mocha --require ts-node/register test/**/*.spec.ts --exit"
+    "dev": "npm run build && npm start",
+    "start": "node dist/server",
+    "prebuild": "rm -rf dist",
+    "build": "tsc -p tsconfig.compiler.json",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register test/**/*.spec.ts --exit"
   },
   "author": "Nicola Marcacci Rossi <nicolamr@gmail.com> (http://nmr.io)",
   "license": "ISC",
@@ -22,6 +24,7 @@
     "mocha": "^5.2.0",
     "supertest": "^3.3.0",
     "ts-node": "^7.0.1",
+    "tsconfig-paths": "^3.6.0",
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1"
   },

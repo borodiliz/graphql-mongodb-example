@@ -1,4 +1,4 @@
-import { createServer } from './start'
+import { createServer } from './app'
 
 createServer()
   .then(({ app, server }) => {
