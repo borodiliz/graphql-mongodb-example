@@ -14,7 +14,8 @@ describe('GraphQL', () => {
     const res = await req.query(`{
       post(_id: "5ba2f9874f71b576a1965cd9") {
         _id
-      }`)
+      }
+    }`)
 
     expect(res.body.error).to.be.a('undefined')
     expect(res.body.data.post._id).to.equal('5ba2f9874f71b576a1965cd9')
