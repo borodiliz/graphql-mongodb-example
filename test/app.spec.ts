@@ -11,14 +11,25 @@ describe('GraphQL', () => {
   })
 
   it('query - post', async () => {
+    const post: Post = {
+      title: 'Title',
+      content: 'Content'
+    }
+
+    const resPost = await req.mutation(`
+      createPost(title: "${post.title}", content: "${post.content}") {
+        _id
+      }
+    `).then(res => res.body.data.createPost as Post)
+
     const res = await req.query(`{
-      post(_id: "5ba2f9874f71b576a1965cd9") {
+      post(_id: "${resPost._id}") {
         _id
       }
     }`)
 
     expect(res.body.error).to.be.a('undefined')
-    expect(res.body.data.post._id).to.equal('5ba2f9874f71b576a1965cd9')
+    expect(res.body.data.post._id).to.equal(resPost._id)
   })
 
   it('mutation - createPost', async () => {
