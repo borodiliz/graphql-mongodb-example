@@ -16,8 +16,8 @@ export class Request {
   public get graphqlPath() { return this.server.graphqlPath }
 
   public query(query: string) {
-    return this.req.post(this.graphqlPath)
-      .send({ query })
+    return this.req.get(this.graphqlPath)
+      .query({ query })
       .expect(200)
   }
 
