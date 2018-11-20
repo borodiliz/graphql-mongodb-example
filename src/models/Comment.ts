@@ -1,9 +1,24 @@
 import { Post } from './Post'
 import { ObjectID } from 'mongodb'
+import { ObjectType, Field } from 'type-graphql'
+import { Entity, ObjectIdColumn, Column } from 'typeorm'
 
-export interface Comment {
+@ObjectType()
+@Entity()
+export class Comment {
+
+  @ObjectIdColumn()
+  @Field()
   _id?: ObjectID
+
+  @Column()
+  @Field()
   postId: string
+
+  @Column()
+  @Field()
   content: string
+
+  @Field(() => [Comment])
   post?: Post
 }

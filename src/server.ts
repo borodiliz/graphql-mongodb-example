@@ -1,8 +1,13 @@
-import { createServer } from './app'
 
-createServer()
-  .then(({ app, server }) => {
-    app.listen(process.env.PORT, () => {
-      console.log(`Visit http://localhost:${process.env.PORT}${server.graphqlPath}`)
-    })
+import { app, server } from './app'
+import { initDB } from './db'
+
+async function runServer() {
+  await initDB()
+  app.listen(process.env.PORT, () => {
+    console.log(`🚀 Server ready at http://localhost:${process.env.PORT}${server.graphqlPath}`)
   })
+}
+
+runServer()
+  .catch(e => console.log(e))
