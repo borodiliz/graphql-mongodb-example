@@ -10,8 +10,8 @@ export class CreateCommentArgs {
   content: string
 }
 
-@Resolver(Post)
-export class PostResvoler {
+@Resolver(Comment)
+export class CommentResvoler {
 
   constructor(
     private readonly postRepogitory = getMongoRepository(Post),
@@ -23,15 +23,26 @@ export class PostResvoler {
     return this.commentRepogitory.find({ postId })
   }
 
+  @FieldResolver()
+  public post(@Root() { postId }: Comment) {
+    return this.postRepogitory.findOne(postId)
+  }
+
   @Mutation(() => Comment)
   public async createComment(@Args() postArgs: CreateCommentArgs) {
     const result = await this.commentRepogitory.insertOne(postArgs)
     return this.commentRepogitory.findOne(result.insertedId)
   }
 
-  @FieldResolver(() => Post)
-  public async post(@Root() { postId }: Comment) {
-    return this.postRepogitory.findOne(postId)
+  @Mutation(() => Comment)
+  public async removeComment(@Arg('id') id: string) {
+    const comment = await this.commentRepogitory.findOne(id)
+    if (!comment) {
+      throw new Error(`Not found comment: ${id}`)
+    }
+
+    const result = await this.commentRepogitory.remove(comment)
+    return result
   }
 
 }

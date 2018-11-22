@@ -24,8 +24,8 @@ export class PostResvoler {
   }
 
   @Query(() => Post)
-  public post(@Arg('_id') _id: string) {
-    return this.postRepogitory.findOne(_id)
+  public post(@Arg('id') id: string) {
+    return this.postRepogitory.findOne(id)
   }
 
   @Mutation(() => Post)
@@ -34,8 +34,19 @@ export class PostResvoler {
     return this.postRepogitory.findOne(result.insertedId)
   }
 
-  @FieldResolver(() => [Comment])
-  public async comments(@Root() { _id }: Post) {
-    return this.commentRepogitory.find({ postId: _id.toHexString() })
+  @Mutation(() => Post)
+  public async removePost(@Arg('id') id: string) {
+    const post = await this.postRepogitory.findOne(id)
+    if (!post) {
+      throw new Error(`Not found post: ${id}`)
+    }
+
+    const result = await this.postRepogitory.remove(post)
+    return result
+  }
+
+  @FieldResolver()
+  public async comments(@Root() { id }: Post) {
+    return this.commentRepogitory.find({ postId: id.toHexString() })
   }
 }
