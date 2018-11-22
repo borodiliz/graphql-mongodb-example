@@ -19,6 +19,6 @@ export class Comment {
   @Field()
   content: string
 
-  @Field(() => [Comment])
+  @Field(() => Post)
   post?: Post
 }
