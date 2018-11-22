@@ -9,7 +9,7 @@ export class Comment {
 
   @ObjectIdColumn()
   @Field()
-  _id?: ObjectID
+  id?: ObjectID
 
   @Column()
   @Field()
