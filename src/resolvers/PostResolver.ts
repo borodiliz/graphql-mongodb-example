@@ -1,6 +1,7 @@
 import { Resolver, FieldResolver, Query, Mutation, ArgsType, Field, Args, Arg, Root } from 'type-graphql'
 import { Post, Comment } from '../models'
 import { getMongoRepository } from 'typeorm'
+import { } from 'mongodb'
 
 @ArgsType()
 export class CreatePostArgs {
@@ -41,7 +42,12 @@ export class PostResvoler {
       throw new Error(`Not found post: ${id}`)
     }
 
-    const result = await this.postRepogitory.remove(post)
+    const comments = await this.commentRepogitory.find({ postId: id })
+    if (comments && comments.length) {
+      await this.commentRepogitory.remove(comments)
+    }
+
+    const result = this.postRepogitory.remove(post)
     return !!result
   }
 
