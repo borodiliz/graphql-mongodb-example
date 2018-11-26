@@ -34,7 +34,7 @@ export class PostResvoler {
     return this.postRepogitory.findOne(result.insertedId)
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => Boolean)
   public async removePost(@Arg('id') id: string) {
     const post = await this.postRepogitory.findOne(id)
     if (!post) {
@@ -42,7 +42,7 @@ export class PostResvoler {
     }
 
     const result = await this.postRepogitory.remove(post)
-    return result
+    return !!result
   }
 
   @FieldResolver()

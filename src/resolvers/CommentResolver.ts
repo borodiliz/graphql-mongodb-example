@@ -34,7 +34,7 @@ export class CommentResvoler {
     return this.commentRepogitory.findOne(result.insertedId)
   }
 
-  @Mutation(() => Comment)
+  @Mutation(() => Boolean)
   public async removeComment(@Arg('id') id: string) {
     const comment = await this.commentRepogitory.findOne(id)
     if (!comment) {
@@ -42,7 +42,7 @@ export class CommentResvoler {
     }
 
     const result = await this.commentRepogitory.remove(comment)
-    return result
+    return !!result
   }
 
 }
