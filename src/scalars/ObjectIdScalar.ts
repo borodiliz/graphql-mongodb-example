@@ -1,14 +1,14 @@
 import { GraphQLScalarType, Kind } from 'graphql'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 
 export const ObjectIdScalar = new GraphQLScalarType({
-  name: 'ObjectID',
+  name: 'ObjectId',
   description: 'Mongo Object id scalar type',
-  parseValue: (value: string) => new ObjectID(value),
-  serialize: (value: ObjectID) => value.toHexString(),
+  parseValue: (value: string) => new ObjectId(value),
+  serialize: (value: ObjectId) => value.toHexString(),
   parseLiteral: ast => {
     if (ast.kind === Kind.STRING) {
-      return new ObjectID(ast.value)
+      return new ObjectId(ast.value)
     }
     return null
   }

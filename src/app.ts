@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import express from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchemaSync } from 'type-graphql'
@@ -12,7 +12,7 @@ const schema = buildSchemaSync({
     __dirname + '/resolvers/**/*.{ts,js}'
   ],
   scalarsMap: [
-    { type: ObjectID, scalar: ObjectIdScalar }
+    { type: ObjectId, scalar: ObjectIdScalar }
   ],
   validate: false
 })

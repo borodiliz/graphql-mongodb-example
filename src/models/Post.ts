@@ -1,5 +1,5 @@
 import { Comment } from './Comment'
-import { ObjectID } from 'mongodb'
+import { ObjectId } from 'mongodb'
 import { ObjectType, Field } from 'type-graphql'
 import { Entity, ObjectIdColumn, Column } from 'typeorm'
 
@@ -9,7 +9,7 @@ export class Post {
 
   @ObjectIdColumn()
   @Field()
-  id?: ObjectID
+  id?: ObjectId
 
   @Column()
   @Field()
